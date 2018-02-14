@@ -1,14 +1,6 @@
 package com.fsck.k9.activity;
 
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -21,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -100,8 +93,19 @@ import com.fsck.k9.search.LocalSearch;
 import com.fsck.k9.ui.EolConvertingEditText;
 import com.fsck.k9.ui.compose.QuotedMessageMvpView;
 import com.fsck.k9.ui.compose.QuotedMessagePresenter;
+
 import org.openintents.openpgp.util.OpenPgpApi;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import timber.log.Timber;
+
+import static com.fsck.k9.R.layout.message_compose;
 
 
 @SuppressWarnings("deprecation") // TODO get rid of activity dialogs and indeterminate progress bars
@@ -234,14 +238,14 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             ContextThemeWrapper themeContext = new ContextThemeWrapper(this,
                     K9.getK9ThemeResourceId(K9.getK9ComposerTheme()));
             @SuppressLint("InflateParams") // this is the top level activity element, it has no root
-            View v = LayoutInflater.from(themeContext).inflate(R.layout.message_compose, null);
+            View v = LayoutInflater.from(themeContext).inflate(message_compose, null);
             TypedValue outValue = new TypedValue();
             // background color needs to be forced
             themeContext.getTheme().resolveAttribute(R.attr.messageViewBackgroundColor, outValue, true);
             v.setBackgroundColor(outValue.data);
             setContentView(v);
         } else {
-            setContentView(R.layout.message_compose);
+            setContentView(message_compose);
         }
 
         initializeActionBar();
@@ -1537,7 +1541,9 @@ public class MessageCompose extends K9Activity implements OnClickListener,
             finish();
         }
     }
-
+    @Override public void onConfigurationChanged(final Configuration newConfig)
+    { // Ignore orientation change to keep activity from restarting
+         super.onConfigurationChanged(newConfig); }
     @Override
     public void onMessageBuildCancel() {
         currentMessageBuilder = null;
